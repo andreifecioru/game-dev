@@ -1,0 +1,15 @@
+plugins {
+  id 'application'
+}
+
+dependencies {
+  implementation project(':core')
+
+  api variantOf(libs.gdx.platform) { classifier 'natives-desktop'}
+  api libs.gdx.backend.lwjgl3
+}
+
+application {
+  // Define the main class for the application.
+  mainClass = 'com.afecioru.gamedev.starter.Launcher'
+}

@@ -1,0 +1,28 @@
+ext.projectIds = [
+    'group': 'com.afecioru.gamedev.starter',
+    'version': '0.1'
+]
+
+allprojects {
+  group = projectIds.group
+  version = projectIds.version
+}
+
+subprojects {
+  apply plugin: 'scala'
+  apply plugin: 'java-library'
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    implementation libs.scala.library
+
+    testImplementation libs.junit
+    testImplementation libs.scalatest.v2.v13
+    testImplementation libs.junit.v4.v13.v2.v13
+
+    testRuntimeOnly libs.scala.xml.v2.v13
+  }
+}

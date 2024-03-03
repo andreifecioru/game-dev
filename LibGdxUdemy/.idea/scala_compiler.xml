@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <profile name="Gradle 1" modules="LibGdxStarter.core.main,LibGdxStarter.core.test,LibGdxStarter.desktop.main,LibGdxStarter.desktop.test,LibGdxUdemy.core.main,LibGdxUdemy.core.test,LibGdxUdemy.desktop.main,LibGdxUdemy.desktop.test,StarterKit.app.main,StarterKit.app.test,StarterKit.core.main,StarterKit.core.test,StarterKit.desktop.main,StarterKit.desktop.test">
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+    </profile>
+  </component>
+</project>

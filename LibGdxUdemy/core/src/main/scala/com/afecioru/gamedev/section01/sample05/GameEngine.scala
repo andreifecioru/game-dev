@@ -3,14 +3,13 @@ package com.afecioru.gamedev.section01.sample05
 import com.afecioru.gamedev.section01.{BaseGameEngine, LoggingSupport}
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.utils.viewport.{ExtendViewport, FillViewport, FitViewport, ScreenViewport, StretchViewport, Viewport}
+import com.badlogic.gdx.utils.viewport._
 import com.badlogic.gdx.{Application, Gdx, Input, InputAdapter}
 
 import scala.collection.mutable.{Buffer => MBuffer}
 
 final case class GameEngine() extends BaseGameEngine
   with LoggingSupport {
-  import GameEngine._
 
   override val WINDOW_WIDTH = 1080
   override val WINDOW_HEIGHT = 720

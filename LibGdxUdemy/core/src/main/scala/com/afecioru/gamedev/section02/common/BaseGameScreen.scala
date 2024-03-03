@@ -16,11 +16,17 @@ trait GameScreenInfo {
 
   def WORLD_CENTER_X: Float
   def WORLD_CENTER_Y: Float
+
+  def renderer: ShapeRenderer
+  def batch: SpriteBatch
+  def inputMultiplexer: InputMultiplexer
 }
 
 abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with GameScreenInfo {
   import ShapeRendererExtensions._
   import SpriteBatchExtensions._
+
+  private implicit val ui: GameScreenInfo = this
 
   protected def WINDOW_WIDTH: Int = config.window.width
   protected def WINDOW_HEIGHT: Int = config.window.height
@@ -34,7 +40,7 @@ abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with Gam
 
   protected var camera: Camera2D = _
   protected var viewport: Viewport = _
-  protected var batch: SpriteBatch = _
+  var batch: SpriteBatch = _
   var renderer: ShapeRenderer = _
 
   val inputMultiplexer: InputMultiplexer = new InputMultiplexer
@@ -52,8 +58,6 @@ abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with Gam
     batch = new SpriteBatch
     renderer = new ShapeRenderer
     viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera)
-
-    inputMultiplexer.addProcessor(camera.inputHandler)
   }
 
   override def render(delta: Float): Unit = {

@@ -13,8 +13,6 @@ trait DirectionalControls extends LoggingSupport {
   protected def KEY_CODE_RIGHT: Int = Int.MinValue
   protected def KEY_CODE_ZOOM_IN: Int = Int.MinValue
   protected def KEY_CODE_ZOOM_OUT: Int = Int.MinValue
-  protected def KEY_CODE_SHOW_DEBUG_INFO: Int = Int.MinValue
-  protected def KEY_CODE_RESET: Int = Int.MinValue
 
   private var isUpPressed = false
   private var isDownPressed = false
@@ -23,23 +21,16 @@ trait DirectionalControls extends LoggingSupport {
   private var isZoomInPressed = false
   private var isZoomOutPressed = false
 
-  protected def showDebugInfo(): Unit = ()
-  protected def reset(): Unit = ()
-
-  private var _speed: Vector3 = Vector3.Zero
-  def speed: Vector3 = _speed
-  def speed_=(value: Vector3): Unit = _speed = value
-
   def movement: Vector3 = {
     import GenericUtils.implicits._
-    val deltaX = ((isRightPressed:Int) - (isLeftPressed:Int)) * speed.x * DELTA_TIME
-    val deltaY = ((isUpPressed:Int) - (isDownPressed:Int)) * speed.y * DELTA_TIME
-    val deltaZ = ((isZoomOutPressed:Int) - (isZoomInPressed: Int)) * speed.z * DELTA_TIME
+    val deltaX = ((isRightPressed:Int) - (isLeftPressed:Int)).toFloat
+    val deltaY = ((isUpPressed:Int) - (isDownPressed:Int)).toFloat
+    val deltaZ = ((isZoomOutPressed:Int) - (isZoomInPressed: Int)).toFloat
 
     new Vector3(deltaX, deltaY, deltaZ)
   }
 
-  val inputHandler: InputProcessor = new InputAdapter {
+  val directionalInputHandler: InputProcessor = new InputAdapter {
     override def keyDown(keycode: Int): Boolean = {
       keycode match {
         case _ if keycode == KEY_CODE_UP => isUpPressed = true; true
@@ -48,8 +39,6 @@ trait DirectionalControls extends LoggingSupport {
         case _ if keycode == KEY_CODE_RIGHT => isRightPressed = true; true
         case _ if keycode == KEY_CODE_ZOOM_IN => isZoomInPressed = true; true
         case _ if keycode == KEY_CODE_ZOOM_OUT => isZoomOutPressed = true; true
-        case _ if keycode == KEY_CODE_SHOW_DEBUG_INFO => showDebugInfo(); true
-        case _ if keycode == KEY_CODE_RESET => reset(); true
         case _ => false
       }
     }

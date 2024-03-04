@@ -1,7 +1,7 @@
 package com.afecioru.gamedev.section02.sample01
 
 import com.afecioru.gamedev.section02.LoggingSupport
-import com.afecioru.gamedev.section02.common.GameScreenInfo
+import com.afecioru.gamedev.section02.common.GameContext
 import com.badlogic.gdx.math.{Circle, Vector2, Vector3}
 import com.afecioru.gamedev.section02.common.extensions.ShapeRendererExtensions
 import com.badlogic.gdx.{InputAdapter, InputProcessor}
@@ -21,7 +21,7 @@ package object entity {
     def boundsRadius: Float
     def boundsSize: Float = 2 * boundsRadius
 
-    def ui: GameScreenInfo
+    def ctx: GameContext
 
     protected val bounds: Circle = new Circle(Vector2.Zero, boundsRadius)
 
@@ -38,6 +38,11 @@ package object entity {
 
     protected def initialPos: Vector2
 
+    protected def init(): Unit = {
+      ctx.inputMultiplexer.addProcessor(debugControlsInputHandler)
+      reset()
+    }
+
     def reset(): Unit = {
       pos = initialPos
       speed = initialSpeed
@@ -49,13 +54,14 @@ package object entity {
       if (debugEnabled) drawDebug()
     }
 
-    protected def update(): Unit
-    protected def draw(): Unit
+    def update(): Unit = ()
+    def draw(): Unit = ()
+    def dispose(): Unit = ()
 
     private def drawDebug(): Unit = {
-      ui.renderer.withShape(ShapeType.Line) {
-        ui.renderer.withColor(Color.WHITE) {
-          ui.renderer.circle(bounds.x, bounds.y, bounds.radius, 30)
+      ctx.renderer.withShape(ShapeType.Line) {
+        ctx.renderer.withColor(Color.WHITE) {
+          ctx.renderer.circle(bounds.x, bounds.y, bounds.radius, 30)
         }
       }
     }
@@ -70,10 +76,7 @@ package object entity {
       }
     }
 
-    protected def init(): Unit = {
-      ui.inputMultiplexer.addProcessor(debugControlsInputHandler)
-      reset()
-    }
+
   }
 
 }

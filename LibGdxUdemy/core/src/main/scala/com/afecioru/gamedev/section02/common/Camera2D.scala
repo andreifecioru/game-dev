@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.{MathUtils, Vector3}
 import com.badlogic.gdx.{InputAdapter, InputProcessor}
 import com.afecioru.gamedev.section02.GdxUtils
 
-case class Camera2D(initialPosition: Vector3,
-                    config: CameraConfig)
-                   (implicit val ui: GameScreenInfo)
+case class Camera2D(initialPosition: Vector3)
+                   (implicit val ctx: GameContext)
   extends OrthographicCamera with DirectionalControls {
 
   import GdxUtils._
+
+  private val config: CameraConfig = ctx.gameConfig.camera
 
   override protected val KEY_CODE_UP: Int = config.controls.keyCodeUp
   override protected val KEY_CODE_DOWN: Int = config.controls.keyCodeDown
@@ -62,7 +63,7 @@ case class Camera2D(initialPosition: Vector3,
   {
     reset()
     speed = config.controls.speed
-    ui.inputMultiplexer.addProcessor(directionalInputHandler)
-    ui.inputMultiplexer.addProcessor(debugControlsInputHandler)
+    ctx.inputMultiplexer.addProcessor(directionalInputHandler)
+    ctx.inputMultiplexer.addProcessor(debugControlsInputHandler)
   }
 }

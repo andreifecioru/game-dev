@@ -10,33 +10,29 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, InputMultiplexer, ScreenAdapter}
 
-trait GameScreenInfo {
-  def WORLD_WIDTH: Float
-  def WORLD_HEIGHT: Float
+trait GameContext {
+  def gameConfig: GameConfig
 
-  def WORLD_CENTER_X: Float
-  def WORLD_CENTER_Y: Float
+  def WINDOW_WIDTH: Int = gameConfig.window.width
+  def WINDOW_HEIGHT: Int = gameConfig.window.height
+  def WORLD_UNIT_IN_PIXELS: Int = gameConfig.window.worldUnitInPixels
+
+  lazy val WORLD_WIDTH: Float = WINDOW_WIDTH / WORLD_UNIT_IN_PIXELS.toFloat
+  lazy val WORLD_HEIGHT: Float = WINDOW_HEIGHT / WORLD_UNIT_IN_PIXELS.toFloat
+
+  lazy val WORLD_CENTER_X: Float = WORLD_WIDTH / 2
+  lazy val WORLD_CENTER_Y: Float = WORLD_HEIGHT / 2
 
   def renderer: ShapeRenderer
   def batch: SpriteBatch
   def inputMultiplexer: InputMultiplexer
 }
 
-abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with GameScreenInfo {
+abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with GameContext {
   import ShapeRendererExtensions._
   import SpriteBatchExtensions._
 
-  private implicit val ui: GameScreenInfo = this
-
-  protected def WINDOW_WIDTH: Int = config.window.width
-  protected def WINDOW_HEIGHT: Int = config.window.height
-  protected def WORLD_UNIT_IN_PIXELS: Int = config.window.worldUnitInPixels
-
-  override lazy val WORLD_WIDTH: Float = WINDOW_WIDTH / WORLD_UNIT_IN_PIXELS.toFloat
-  override lazy val WORLD_HEIGHT: Float = WINDOW_HEIGHT / WORLD_UNIT_IN_PIXELS.toFloat
-
-  override lazy val WORLD_CENTER_X: Float = WORLD_WIDTH / 2
-  override lazy val WORLD_CENTER_Y: Float = WORLD_HEIGHT / 2
+  private implicit val ctx: GameContext = this
 
   protected var camera: Camera2D = _
   protected var viewport: Viewport = _
@@ -54,7 +50,7 @@ abstract class BaseGameScreen(config: GameConfig) extends ScreenAdapter with Gam
     Gdx.graphics.setWindowedMode(WINDOW_WIDTH, WINDOW_HEIGHT)
     Gdx.input.setInputProcessor(inputMultiplexer)
 
-    camera = Camera2D(new Vector3(WORLD_CENTER_X, WORLD_CENTER_Y, 1.0f), config.camera)
+    camera = Camera2D(new Vector3(WORLD_CENTER_X, WORLD_CENTER_Y, 1.0f))
     batch = new SpriteBatch
     renderer = new ShapeRenderer
     viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera)

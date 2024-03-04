@@ -2,26 +2,26 @@ package com.afecioru.gamedev.section02.sample01.entity
 
 import com.afecioru.gamedev.section02.GdxUtils
 import com.afecioru.gamedev.section02.common.extensions.ShapeRendererExtensions
-import com.afecioru.gamedev.section02.common.{DirectionalControls, GameScreenInfo}
+import com.afecioru.gamedev.section02.common.{DirectionalControls, GameContext}
 import com.afecioru.gamedev.section02.sample01.config.PlayerConfig
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.{Circle, MathUtils, Vector2}
 
-final case class Player(config: PlayerConfig)
-                       (implicit screenInfo: GameScreenInfo)
+final case class Player()(implicit context: GameContext)
   extends Entity with DirectionalControls {
 
   import GdxUtils._
   import Player._
   import ShapeRendererExtensions._
 
-  override val ui: GameScreenInfo = screenInfo
+  override def ctx: GameContext = context
+  private val config: PlayerConfig = ctx.gameConfig.player
 
   override val speed: Vector2 = new Vector2(config.controls.speed.x, config.controls.speed.y)
 
   override val initialSpeed: Vector2 = Vector2.Zero
-  override val initialPos: Vector2 = new Vector2(ui.WORLD_WIDTH / 2, 1.0f)
+  override val initialPos: Vector2 = new Vector2(ctx.WORLD_WIDTH / 2, 1.0f)
 
   override def boundsRadius: Float = BOUNDS_RADIUS
 
@@ -41,16 +41,16 @@ final case class Player(config: PlayerConfig)
     val deltaX = movement.x * speed.x * DELTA_TIME
     val deltaY = movement.y * speed.y * DELTA_TIME
 
-    val x = MathUtils.clamp(pos.x + deltaX, BOUNDS_RADIUS, ui.WORLD_WIDTH - BOUNDS_RADIUS)
-    val y = MathUtils.clamp(pos.y + deltaY, BOUNDS_RADIUS, ui.WORLD_HEIGHT- BOUNDS_RADIUS)
+    val x = MathUtils.clamp(pos.x + deltaX, BOUNDS_RADIUS, ctx.WORLD_WIDTH - BOUNDS_RADIUS)
+    val y = MathUtils.clamp(pos.y + deltaY, BOUNDS_RADIUS, ctx.WORLD_HEIGHT- BOUNDS_RADIUS)
 
     pos = new Vector2(x, y)
   }
 
   override def draw(): Unit = {
-    ui.renderer.withShape(ShapeType.Filled) {
-      ui.renderer.withColor(Color.DARK_GRAY) {
-        ui.renderer.circle(circle.x, circle.y, circle.radius, 30)
+    ctx.renderer.withShape(ShapeType.Filled) {
+      ctx.renderer.withColor(Color.DARK_GRAY) {
+        ctx.renderer.circle(circle.x, circle.y, circle.radius, 30)
       }
     }
   }
@@ -58,7 +58,7 @@ final case class Player(config: PlayerConfig)
   // -------------[ INITIALIZATION ]-------------
   {
     init()
-    ui.inputMultiplexer.addProcessor(directionalInputHandler)
+    ctx.inputMultiplexer.addProcessor(directionalInputHandler)
   }
 }
 

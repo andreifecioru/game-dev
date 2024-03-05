@@ -3,7 +3,7 @@ package com.afecioru.gamedev.section02.sample01.screen
 import scala.collection.mutable.{Buffer => MBuffer}
 import com.afecioru.gamedev.section02.common.GameContext
 import com.afecioru.gamedev.section02.sample01.entity.{Obstacle, Player}
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Intersector, Vector2}
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,9 +11,12 @@ import scala.concurrent.Future
 
 case class Scene2D()(implicit context: GameContext) {
   import Scene2D._
+  import Scene2D.implicits._
 
   private var player: Player = _
   private val obstacles: MBuffer[Obstacle] = MBuffer.empty
+
+  private var isPlayerAlive = true;
 
   def init(): Unit = {
     player = new Player()
@@ -37,16 +40,21 @@ case class Scene2D()(implicit context: GameContext) {
   }
 
   def refresh(): Unit = {
-    player.refresh()
+    isPlayerAlive = !obstacles.exists(player.collidesWith)
 
-    obstacles.synchronized {
-      obstacles.foreach(_.refresh())
+    if (isPlayerAlive) {
+      player.refresh()
+
+      obstacles.synchronized {
+        obstacles.foreach(_.refresh())
+      }
     }
   }
 
   def dispose(): Unit = {
     player.dispose()
     obstacles.foreach(_.dispose())
+    obstacles.clear()
   }
 }
 
@@ -58,4 +66,12 @@ object Scene2D {
   private val OBSTACLE_MAX_DELAY_SEC = 10
 
   private val random = scala.util.Random
+
+  object implicits {
+    implicit class PlayerExtensions(val player: Player) {
+      def collidesWith(obstacle: Obstacle): Boolean = {
+        Intersector.overlaps(player.bounds, obstacle.bounds)
+      }
+    }
+  }
 }

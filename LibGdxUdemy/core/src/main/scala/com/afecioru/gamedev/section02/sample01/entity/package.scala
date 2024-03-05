@@ -23,7 +23,7 @@ package object entity {
 
     def ctx: GameContext
 
-    protected val bounds: Circle = new Circle(Vector2.Zero, boundsRadius)
+    val bounds: Circle = new Circle(Vector2.Zero, boundsRadius)
 
     private var _speed: Vector2 = Vector2.Zero
     def speed: Vector2 = _speed
@@ -33,7 +33,6 @@ package object entity {
     def pos: Vector2 = new Vector2(bounds.x, bounds.y)
     def pos_=(position: Vector2): Unit = {
       bounds.setPosition(position)
-      ()
     }
 
     protected def initialPos: Vector2
